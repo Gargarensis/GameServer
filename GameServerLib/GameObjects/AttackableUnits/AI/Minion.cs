@@ -122,7 +122,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
                     u.IsDead ||
                     u.Team == Team ||
                     GetDistanceTo(u) > DETECT_RANGE ||
-                    !_game.ObjectManager.TeamHasVisionOn(Team, u))
+                    (!_game.ObjectManager.TeamHasVisionOn(Team, u)) && !(it.Value is IBaseTurret))
                     continue;
                 var priority = (int)ClassifyTarget(u);  // get the priority.
                 if (priority < nextTargetPriority) // if the priority is lower than the target we checked previously

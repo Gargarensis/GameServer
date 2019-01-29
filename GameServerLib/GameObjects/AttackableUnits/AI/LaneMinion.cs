@@ -110,13 +110,13 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
             var nextTargetPriority = 14;
 
             var objects = _game.ObjectManager.GetObjects();
-            foreach (var it in objects.OrderBy(x => GetDistanceTo(x.Value) - Stats.Range.Total))//Find target closest to max attack range.
+            foreach (var it in objects.OrderBy(x => GetDistanceTo(x.Value) - DETECT_RANGE))//Find target closest to max attack range.
             {
-                if (!(it.Value is IAttackableUnit u) ||
+                if (!(it.Value is IAttackableUnit u) || !(it.Value is IBaseTurret) ||
                     u.IsDead ||
                     u.Team == Team ||
                     GetDistanceTo(u) > DETECT_RANGE ||
-                    !_game.ObjectManager.TeamHasVisionOn(Team, u))
+                    (!_game.ObjectManager.TeamHasVisionOn(Team, u)) && !(it.Value is IBaseTurret))
                     continue;
 
                 var priority = (int)ClassifyTarget(u);  // get the priority.

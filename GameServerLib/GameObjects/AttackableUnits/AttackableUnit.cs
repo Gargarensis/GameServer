@@ -14,7 +14,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits
 {
     public class AttackableUnit : GameObject, IAttackableUnit
     {
-        internal const float DETECT_RANGE = 475.0f;
+        internal const float DETECT_RANGE = 700.0f;
         internal const int EXP_RANGE = 1400;
 
         public IStats Stats { get; protected set; }

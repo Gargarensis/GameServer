@@ -414,7 +414,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
 
             if (TargetUnit != null)
             {
-                if (TargetUnit.IsDead || !_game.ObjectManager.TeamHasVisionOn(Team, TargetUnit))
+                if (TargetUnit.IsDead || (!(this is IBaseTurret) && !_game.ObjectManager.TeamHasVisionOn(Team, TargetUnit)))
                 {
                     SetTargetUnit(null);
                     IsAttacking = false;
@@ -502,7 +502,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
             {
                 if (AutoAttackTarget == null
                     || AutoAttackTarget.IsDead
-                    || !_game.ObjectManager.TeamHasVisionOn(Team, AutoAttackTarget)
+                    || !(AutoAttackTarget is IBaseTurret) && !_game.ObjectManager.TeamHasVisionOn(Team, AutoAttackTarget)
                 )
                 {
                     IsAttacking = false;
