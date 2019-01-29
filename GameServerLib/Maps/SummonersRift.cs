@@ -241,8 +241,6 @@ namespace LeagueSandbox.GameServer.Maps
                 TurretType.NEXUS_TURRET, GetTurretItems(TurretType.NEXUS_TURRET)));
             _game.ObjectManager.AddObject(new LaneTurret(_game, "Turret_T2_C_05_A", 8752.0f, 8323.0f, TeamId.TEAM_PURPLE,
                TurretType.OUTER_TURRET, GetTurretItems(TurretType.OUTER_TURRET)));
-            //_game.ObjectManager.AddObject(new LaneTurret(_game, "Turret_T2_C_05_A", 8952.0f, 8523.0f, TeamId.TEAM_PURPLE,
-            //   TurretType.OUTER_TURRET, GetTurretItems(TurretType.OUTER_TURRET)));
             _game.ObjectManager.AddObject(new LaneTurret(_game, "Turret_T2_C_04_A", 9568.0f, 9888.0f, TeamId.TEAM_PURPLE,
                 TurretType.INNER_TURRET, GetTurretItems(TurretType.INNER_TURRET)));
             _game.ObjectManager.AddObject(new LaneTurret(_game, "Turret_T2_C_03_A", 10937.0f, 10989.0f, TeamId.TEAM_PURPLE,
@@ -412,10 +410,10 @@ namespace LeagueSandbox.GameServer.Maps
 
             var dic = new Dictionary<MinionSpawnType, float>
             {
-                { MinionSpawnType.MINION_TYPE_MELEE, 19.8f + 0.2f * (int)(_game.GameTime / (90 * 1000)) },
-                { MinionSpawnType.MINION_TYPE_CASTER, 16.8f + 0.2f * (int)(_game.GameTime / (90 * 1000)) },
-                { MinionSpawnType.MINION_TYPE_CANNON, 40.0f + 0.5f * (int)(_game.GameTime / (90 * 1000)) },
-                { MinionSpawnType.MINION_TYPE_SUPER, 40.0f + 1.0f * (int)(_game.GameTime / (180 * 1000)) }
+                { MinionSpawnType.MINION_TYPE_MELEE, 21.0f }, //19.8f + 0.2f * (int)(_game.GameTime / (90 * 1000)) },
+                { MinionSpawnType.MINION_TYPE_CASTER, 14.0f }, //16.8f + 0.2f * (int)(_game.GameTime / (90 * 1000)) },
+                { MinionSpawnType.MINION_TYPE_CANNON, 60.0f + 3.0f * (int)((_game.GameTime - 1499f) / (90 * 1000)) },
+                { MinionSpawnType.MINION_TYPE_SUPER, 60.0f + 3.0f * (int)((_game.GameTime - 1499f) / (90 * 1000)) }
             };
 
             if (!dic.ContainsKey(m.MinionSpawnType))
@@ -435,8 +433,8 @@ namespace LeagueSandbox.GameServer.Maps
 
             var dic = new Dictionary<MinionSpawnType, float>
             {
-                { MinionSpawnType.MINION_TYPE_MELEE, 64.0f },
-                { MinionSpawnType.MINION_TYPE_CASTER, 32.0f },
+                { MinionSpawnType.MINION_TYPE_MELEE, 59.0f + (int)((_game.GameTime - 1499f) / (90 * 1000)) },
+                { MinionSpawnType.MINION_TYPE_CASTER, 29.0f },
                 { MinionSpawnType.MINION_TYPE_CANNON, 92.0f },
                 { MinionSpawnType.MINION_TYPE_SUPER, 97.0f }
             };
