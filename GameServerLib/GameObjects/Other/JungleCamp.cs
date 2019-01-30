@@ -17,6 +17,7 @@ namespace LeagueSandbox.GameServer.GameObjects
         public float FirstSpawnTime { get; set; }
         public float RespawnTime { get; }
         public float NextSpawnTime { get; set; }
+        public float SpawnDuration { get; set; } = 0f;
         public bool IsAlive { get; set; }
         public int TimesCleared { get; private set; }
         public IMonster BigMonsterRef { get; set; }

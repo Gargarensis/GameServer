@@ -2,6 +2,6 @@
 {
     public enum CampId
     {
-        CAMP_BLUE_WRAITH = 3
+        CAMP_BLUE_WRAITH = 1
     }
 }

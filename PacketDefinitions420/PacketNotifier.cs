@@ -768,7 +768,7 @@ namespace PacketDefinitions420
         {
             // TODO: not broadcast to everyone but only to the team who cleared the camp, and, if an enemy saw it done, also to them
             // right now: broadcast to everyone
-            var createCampPacket = new CreateMonsterCamp(jC.X, jC.Y, jC.Z, jC.IconName, (byte) jC.CampId, 0, 0);
+            var createCampPacket = new CreateMonsterCamp(jC);
             _packetHandlerManager.BroadcastPacket(createCampPacket, Channel.CHL_S2C);
         }
 
@@ -776,6 +776,25 @@ namespace PacketDefinitions420
         {
             var spawnCampMonsterPacket = new SpawnCampMonster(_navGrid, monster);
             _packetHandlerManager.BroadcastPacket(spawnCampMonsterPacket, Channel.CHL_S2C);
+        }
+
+        public void NotifyActivateMinionCamp(IJungleCamp jungleCamp)
+        {
+            var activateMinionCamp = new ActivateMinionCamp(jungleCamp);
+            _packetHandlerManager.BroadcastPacket(activateMinionCamp, Channel.CHL_S2C);
+        }
+
+        public void NotifyNeutralMinionTimerUpdate(IJungleCamp jungleCamp)
+        {
+            var neutralMinionTimerUpdate = new NeutralMinionTimerUpdate(jungleCamp);
+            _packetHandlerManager.BroadcastPacket(neutralMinionTimerUpdate, Channel.CHL_S2C);
+        }
+
+        public void NotifyEmptyNeutralCamp(IJungleCamp jungleCamp, IChampion killer = null)
+        {
+            var emptyNeutralCamp = new EmptyNeutralCamp(jungleCamp, killer);
+            //todo: broadcast only to eligible team(s)
+            _packetHandlerManager.BroadcastPacket(emptyNeutralCamp, Channel.CHL_S2C);
         }
 
         public void NotifyDash(IAttackableUnit u,

@@ -52,6 +52,9 @@
     <Compile Include="Blowfish.cs" />
     <Compile Include="Packet.cs" />
     <Compile Include="PacketDefinitions\PacketCmd.cs" />
+    <Compile Include="PacketDefinitions\S2C\ActivateMinionCamp.cs" />
+    <Compile Include="PacketDefinitions\S2C\NeutralMinionTimerUpdate.cs" />
+    <Compile Include="PacketDefinitions\S2C\EmptyNeutralCamp.cs" />
     <Compile Include="PacketHeader.cs" />
     <Compile Include="PacketType.cs" />
     <Compile Include="Enums\Emotions.cs" />

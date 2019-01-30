@@ -12,6 +12,7 @@ namespace GameServerCore.Packets.Interfaces
 {
     public interface IPacketNotifier
     {
+        void NotifyActivateMinionCamp(IJungleCamp jungleCamp);
         void NotifyAddBuff(IBuff b);
         void NotifyAddGold(IChampion c, IAttackableUnit died, float gold);
         void NotifyAddXp(IChampion champion, float experience);
@@ -36,6 +37,7 @@ namespace GameServerCore.Packets.Interfaces
         void NotifyDebugPacket(int userId, byte[] data);
         void NotifyEditBuff(IBuff b, int stacks);
         void NotifyEmotions(Emotions type, uint netId);
+        void NotifyEmptyNeutralCamp(IJungleCamp jungleCamp, IChampion killer = null);
         void NotifyEnterVision(IGameObject o, TeamId team);
         void NotifyEnterVision(int userId, IChampion champion);
         void NotifyFaceDirection(IAttackableUnit u, Vector2 direction, bool isInstant = true, float turnTime = 0.0833F);
@@ -64,6 +66,7 @@ namespace GameServerCore.Packets.Interfaces
         void NotifyModelUpdate(IAttackableUnit obj);
         void NotifyModifyShield(IAttackableUnit unit, float amount, ShieldType type);
         void NotifyMovement(IGameObject o);
+        void NotifyNeutralMinionTimerUpdate(IJungleCamp jungleCamp);
         void NotifyNextAutoAttack(IAttackableUnit attacker, IAttackableUnit target, uint futureProjNetId, bool isCritical, bool nextAttackFlag);
         void NotifyNpcDie(IAttackableUnit die, IAttackableUnit killer);
         void NotifyOnAttack(IAttackableUnit attacker, IAttackableUnit attacked, AttackType attackType);

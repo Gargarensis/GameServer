@@ -16,6 +16,7 @@ namespace GameServerCore.Domain
         float FirstSpawnTime { get; set; }
         float RespawnTime { get; }
         float NextSpawnTime { get; set; }
+        float SpawnDuration { get; set; }
         bool IsAlive { get; set; }
         int TimesCleared { get; }
         IMonster BigMonsterRef { get; set; }

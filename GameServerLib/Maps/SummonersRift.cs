@@ -136,8 +136,8 @@ namespace LeagueSandbox.GameServer.Maps
                "GreatWraith"
             });
 
-            JungleCamps.Add(CampId.CAMP_BLUE_WRAITH, new JungleCamp(1810f, 8178f, 54.6f, "Lesser_Jungle_Icon", CampId.CAMP_BLUE_WRAITH, null, JungleMonsters[CampId.CAMP_BLUE_WRAITH][0], 105000, 50000));
-
+            JungleCamps.Add(CampId.CAMP_BLUE_WRAITH, new JungleCamp(1810f, 8178f, 54.6f, "Camp", CampId.CAMP_BLUE_WRAITH, null, JungleMonsters[CampId.CAMP_BLUE_WRAITH][0], 10 * 1000, 10 * 1000));
+            _game.PacketNotifier.NotifyCreateMonsterCamp(JungleCamps[CampId.CAMP_BLUE_WRAITH]);
 
             IsJungleInitialized = true;
         }
@@ -372,10 +372,9 @@ namespace LeagueSandbox.GameServer.Maps
                 {
                     if (camp.Value.ShouldRespawn(_game.GameTime))
                     {
-                        _game.PacketNotifier.NotifyCreateMonsterCamp(camp.Value);
-
                         camp.Value.BigMonsterRef = BuildMonsterByName(camp.Value.BigMonster, camp.Value.TimesCleared);
                         _game.ObjectManager.AddObject(camp.Value.BigMonsterRef);
+                        _game.PacketNotifier.NotifyActivateMinionCamp(camp.Value);
 
                         if (camp.Value.SmallMonsters is null)
                             continue;
@@ -390,6 +389,9 @@ namespace LeagueSandbox.GameServer.Maps
                     if (camp.Value.IsAlive && !(camp.Value.BigMonsterRef is null) && camp.Value.BigMonsterRef.IsDead)
                     {
                         camp.Value.CampCleared(_game.GameTime);
+                        // todo, killer?
+                        _game.PacketNotifier.NotifyEmptyNeutralCamp(camp.Value);
+                        //_game.PacketNotifier.NotifyNeutralMinionTimerUpdate(camp.Value);
                     }
                 }
             }
