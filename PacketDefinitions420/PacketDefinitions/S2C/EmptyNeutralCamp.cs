@@ -10,6 +10,7 @@ namespace PacketDefinitions420.PacketDefinitions.S2C
         public EmptyNeutralCamp(IJungleCamp jungleCamp, IChampion killer)
             : base(PacketCmd.PKT_S2C_NEUTRAL_CAMP_EMPTY, killer is null ? 0 : killer.NetId)
         {
+            Write((uint)(killer is null ? 0 : killer.NetId));
             Write((int)jungleCamp.CampId); // camp index
             Write(jungleCamp.GetHashCode()); //TimerType
             Write(jungleCamp.NextSpawnTime); // TimerExpire (for baron -> 1200, dragon -> 150)

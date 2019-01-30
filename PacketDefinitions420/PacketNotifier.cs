@@ -606,7 +606,7 @@ namespace PacketDefinitions420
                     break;
                 case IMonster monster:
                     //todo: not sure about this
-                    if (monster.CampId <= 1)
+                    if (monster.CampId <= 0)
                         NotifyMonsterSpawned(monster);
                     else
                         NotifySpawnCampMonster(monster);
@@ -790,11 +790,16 @@ namespace PacketDefinitions420
             _packetHandlerManager.BroadcastPacket(neutralMinionTimerUpdate, Channel.CHL_S2C);
         }
 
-        public void NotifyEmptyNeutralCamp(IJungleCamp jungleCamp, IChampion killer = null)
+        public void NotifyEmptyNeutralCamp(IJungleCamp jC, IChampion killer = null)
         {
-            var emptyNeutralCamp = new EmptyNeutralCamp(jungleCamp, killer);
+            var emptyNeutralCamp = new EmptyNeutralCamp(jC, killer);
             //todo: broadcast only to eligible team(s)
             _packetHandlerManager.BroadcastPacket(emptyNeutralCamp, Channel.CHL_S2C);
+            //var packet = new LeaguePackets.GamePackets.S2C_Neutral_Camp_Empty();
+            //packet.CampIndex = (int) jC.CampId;
+            //packet.DoPlayVO = false; //todo
+            //packet.
+
         }
 
         public void NotifyDash(IAttackableUnit u,

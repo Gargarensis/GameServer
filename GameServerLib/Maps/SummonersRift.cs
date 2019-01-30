@@ -136,7 +136,7 @@ namespace LeagueSandbox.GameServer.Maps
                "GreatWraith"
             });
 
-            JungleCamps.Add(CampId.CAMP_BLUE_WRAITH, new JungleCamp(1810f, 8178f, 54.6f, "Camp", CampId.CAMP_BLUE_WRAITH, null, JungleMonsters[CampId.CAMP_BLUE_WRAITH][0], 10 * 1000, 10 * 1000));
+            JungleCamps.Add(CampId.CAMP_BLUE_WRAITH, new JungleCamp(1810f, 8178f, 54.6f, "Camp", CampId.CAMP_BLUE_WRAITH, null, JungleMonsters[CampId.CAMP_BLUE_WRAITH][0], 15 * 1000, 15 * 1000));
             _game.PacketNotifier.NotifyCreateMonsterCamp(JungleCamps[CampId.CAMP_BLUE_WRAITH]);
 
             IsJungleInitialized = true;
@@ -331,6 +331,11 @@ namespace LeagueSandbox.GameServer.Maps
             if (IsKillGoldRewardReductionActive && _game.GameTime >= 120 * 1000)
             {
                 IsKillGoldRewardReductionActive = false;
+            }
+
+            if (_game.GameTime % 10 == 0)
+            {
+                _game.PacketNotifier.NotifyGameTimer(_game.GameTime);
             }
 
             // there is surely a better way, cannot do it in init because packetnotifier is not initialized
