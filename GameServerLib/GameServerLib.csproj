@@ -230,6 +230,7 @@
     <Compile Include="GameObjects\Missiles\Cone.cs" />
     <Compile Include="GameObjects\Missiles\ObjMissile.cs" />
     <Compile Include="GameObjects\Other\Announce.cs" />
+    <Compile Include="GameObjects\Other\JungleCamp.cs" />
     <Compile Include="GameObjects\Spells\Buff.cs" />
     <Compile Include="GameObjects\Stats\ChampionStats.cs" />
     <Compile Include="GameObjects\Stats\Replication.cs" />

@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Content\Color.cs" />
+    <Compile Include="Domain\IJungleCamp.cs" />
     <Compile Include="Domain\IAnnounce.cs" />
     <Compile Include="Domain\ICrowdControl.cs" />
     <Compile Include="Domain\IItemRecipe.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="Domain\IUpdate.cs" />
     <Compile Include="Enums\CrowdControlType.cs" />
     <Compile Include="Enums\DamageSource.cs" />
+    <Compile Include="Enums\CampId.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Content\HashFunctions.cs" />
     <Compile Include="Content\INavGrid.cs" />

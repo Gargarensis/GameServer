@@ -26,6 +26,7 @@ namespace GameServerCore.Packets.Interfaces
         void NotifyChampionDie(IChampion die, IAttackableUnit killer, int goldFromKill);
         void NotifyChampionRespawn(IChampion c);
         void NotifyChampionSpawned(IChampion c, TeamId team);
+        void NotifyCreateMonsterCamp(IJungleCamp jC);
         void NotifyDamageDone(IAttackableUnit source, IAttackableUnit target, float amount, DamageType type, DamageText damagetext, bool isGlobal = true, int sourceId = 0, int targetId = 0);
         void NotifyDash(IAttackableUnit u, ITarget t, float dashSpeed, bool keepFacingLastDirection, float leapHeight, float followTargetMaxDistance, float backDistance, float travelTime);
         void NotifyDebugMessage(string htmlDebugMessage);
@@ -89,6 +90,7 @@ namespace GameServerCore.Packets.Interfaces
         void NotifyShowProjectile(IProjectile p);
         void NotifySkillUp(int userId, uint netId, byte skill, byte level, byte pointsLeft);
         void NotifySpawn(IAttackableUnit u);
+        void NotifySpawnCampMonster(IMonster monster);
         void NotifySpawnEnd(int userId);
         void NotifySpawnStart(int userId);
         void NotifySpellAnimation(IAttackableUnit u, string animation);

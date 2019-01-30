@@ -55,6 +55,7 @@
         "CHEATS_ENABLED": true,
         "MINION_SPAWNS_ENABLED": false,
         "CONTENT_PATH": "../../../Content",
-        "IS_DAMAGE_TEXT_GLOBAL": false
+        "IS_DAMAGE_TEXT_GLOBAL": false,
+        "JUNGLE_SPAWNS_ENABLED":  true
     }
 }

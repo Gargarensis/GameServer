@@ -127,6 +127,45 @@ namespace LeagueSandbox.GameServer.Maps
             MinionSpawnType.MINION_TYPE_CASTER
         };
 
+        private Dictionary<CampId, IJungleCamp> JungleCamps = new Dictionary<CampId, IJungleCamp>();
+        private Dictionary<CampId, List<string>> JungleMonsters = new Dictionary<CampId, List<string>>();
+
+        private void InitializeJungleCamps()
+        {
+            JungleMonsters.Add(CampId.CAMP_BLUE_WRAITH, new List<string> {
+               "GreatWraith"
+            });
+
+            JungleCamps.Add(CampId.CAMP_BLUE_WRAITH, new JungleCamp(1810f, 8178f, 54.6f, "Lesser_Jungle_Icon", CampId.CAMP_BLUE_WRAITH, null, JungleMonsters[CampId.CAMP_BLUE_WRAITH][0], 105000, 50000));
+
+
+            IsJungleInitialized = true;
+        }
+
+        private IMonster BuildMonsterByName(string name, int timesKilled = 0)
+        {
+            switch (name)
+            {
+                case "GreatWraith":
+                    Monster m = new Monster(_game, 1810f, 8178f, 0f, 0f, "GreatWraith", "GreatWraith", "", (byte)CampId.CAMP_BLUE_WRAITH);
+                    int level = (int)Math.Floor(timesKilled / 2.0d);
+                    m.Stats.CurrentHealth = level <= 5 ? 1800.0f + 225.0f * level : 3150; // good approx. but some values are wrong
+                    m.Stats.HealthPoints.BaseValue = level <= 5 ? 1800.0f + 225.0f * level : 3150; // good approx. but some values are wrong
+                    m.Stats.AttackDamage.BaseValue = timesKilled > 18 ? 259 : 70 + (189 / 19 - timesKilled); // wrong, approximated
+                    m.Stats.Range.BaseValue = 550.0f;
+                    m.Stats.AttackSpeedFlat = 1.004f;
+                    m.AutoAttackDelay = 1f; // wrong
+                    m.IsMelee = false;
+                    m.Stats.Experience = 150f;
+                    m.Stats.Gold = 65f;
+                    m.SetTeam(TeamId.TEAM_NEUTRAL);
+                    return m;
+                default:
+                    throw new KeyNotFoundException("Jungle Camp name is not defined. Given name: " + name);
+            }
+
+        }
+
         private static readonly Dictionary<TeamId, Vector3> EndGameCameraPosition = new Dictionary<TeamId, Vector3>
         {
             { TeamId.TEAM_BLUE, new Vector3(1170, 1470, 188) },
@@ -185,6 +224,8 @@ namespace LeagueSandbox.GameServer.Maps
         public int BluePillId { get; set; } = 2001;
         public long FirstGoldTime { get; set; } = 90 * 1000;
         public bool SpawnEnabled { get; set; }
+        public bool JungleEnabled { get; set; }
+        public bool IsJungleInitialized = false;
         public SummonersRift(Game game)
         {
             _game = game;
@@ -194,6 +235,7 @@ namespace LeagueSandbox.GameServer.Maps
                 { TeamId.TEAM_PURPLE, new Fountain(game, TeamId.TEAM_PURPLE, 13950, 14200, 1000) }
             };
             SpawnEnabled = _game.Config.MinionSpawnsEnabled;
+            JungleEnabled = _game.Config.JungleSpawnsEnabled;
         }
 
         public int[] GetTurretItems(TurretType type)
@@ -286,10 +328,14 @@ namespace LeagueSandbox.GameServer.Maps
 
         public void Update(float diff)
         {
-            if (_game.GameTime >= 120 * 1000)
+            if (IsKillGoldRewardReductionActive && _game.GameTime >= 120 * 1000)
             {
                 IsKillGoldRewardReductionActive = false;
             }
+
+            // there is surely a better way, cannot do it in init because packetnotifier is not initialized
+            if (!IsJungleInitialized)
+                InitializeJungleCamps();
 
             if (SpawnEnabled)
             {
@@ -318,6 +364,34 @@ namespace LeagueSandbox.GameServer.Maps
             foreach (var fountain in _fountains.Values)
             {
                 fountain.Update(diff);
+            }
+
+            if (JungleEnabled && !(JungleCamps is null) && JungleCamps.Count > 0 && !(JungleMonsters is null) && JungleMonsters.Count > 0)
+            {
+                foreach (var camp in JungleCamps)
+                {
+                    if (camp.Value.ShouldRespawn(_game.GameTime))
+                    {
+                        _game.PacketNotifier.NotifyCreateMonsterCamp(camp.Value);
+
+                        camp.Value.BigMonsterRef = BuildMonsterByName(camp.Value.BigMonster, camp.Value.TimesCleared);
+                        _game.ObjectManager.AddObject(camp.Value.BigMonsterRef);
+
+                        if (camp.Value.SmallMonsters is null)
+                            continue;
+
+                        foreach (var smally in camp.Value.SmallMonsters)
+                        {
+                            camp.Value.SmallMonstersRef.Add(BuildMonsterByName(smally, camp.Value.TimesCleared));
+                            _game.ObjectManager.AddObject(camp.Value.SmallMonstersRef[camp.Value.SmallMonstersRef.Count - 1]);
+                        }
+                    }
+
+                    if (camp.Value.IsAlive && !(camp.Value.BigMonsterRef is null) && camp.Value.BigMonsterRef.IsDead)
+                    {
+                        camp.Value.CampCleared(_game.GameTime);
+                    }
+                }
             }
         }
 

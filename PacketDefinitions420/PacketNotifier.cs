@@ -605,7 +605,11 @@ namespace PacketDefinitions420
                     NotifyChampionSpawned(c, c.Team.GetEnemyTeam());
                     break;
                 case IMonster monster:
-                    NotifyMonsterSpawned(monster);
+                    //todo: not sure about this
+                    if (monster.CampId <= 1)
+                        NotifyMonsterSpawned(monster);
+                    else
+                        NotifySpawnCampMonster(monster);
                     break;
                 case IMinion minion:
                     NotifyMinionSpawned(minion, minion.Team.GetEnemyTeam());
@@ -760,6 +764,19 @@ namespace PacketDefinitions420
             _packetHandlerManager.SendPacket(userId, data, Channel.CHL_S2C);
         }
 
+        public void NotifyCreateMonsterCamp(IJungleCamp jC)
+        {
+            // TODO: not broadcast to everyone but only to the team who cleared the camp, and, if an enemy saw it done, also to them
+            // right now: broadcast to everyone
+            var createCampPacket = new CreateMonsterCamp(jC.X, jC.Y, jC.Z, jC.IconName, (byte) jC.CampId, 0, 0);
+            _packetHandlerManager.BroadcastPacket(createCampPacket, Channel.CHL_S2C);
+        }
+
+        public void NotifySpawnCampMonster(IMonster monster)
+        {
+            var spawnCampMonsterPacket = new SpawnCampMonster(_navGrid, monster);
+            _packetHandlerManager.BroadcastPacket(spawnCampMonsterPacket, Channel.CHL_S2C);
+        }
 
         public void NotifyDash(IAttackableUnit u,
                                ITarget t,
