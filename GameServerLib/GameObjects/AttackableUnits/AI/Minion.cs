@@ -89,7 +89,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
         public override void Update(float diff)
         {
             base.Update(diff);
-            if (!IsDead)
+            if (!IsDead && !(this is Monster))
             {
                 if (IsDashing || _aiPaused)
                 {

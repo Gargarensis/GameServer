@@ -10,5 +10,8 @@ namespace GameServerCore.Domain.GameObjects
         byte CampId { get; }
         byte CampUnk { get; }
         float SpawnAnimationTime { get; }
+        bool IsEngaged { get; set; }
+        Vector2 OriginalPosition { get; }
+        bool IsEvading { get; set; }
     }
 }

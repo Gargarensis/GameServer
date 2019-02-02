@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using GameServerCore.Domain.GameObjects;
@@ -15,6 +16,9 @@ namespace LeagueSandbox.GameServer.GameObjects
         public byte CampId { get; private set; }
         public byte CampUnk { get; private set; }
         public float SpawnAnimationTime { get; private set; }
+        public bool IsEngaged { get; set; }
+        public Vector2 OriginalPosition { get; }
+        public bool IsEvading { get; set; }
 
         public Monster(
             Game game,
@@ -46,12 +50,103 @@ namespace LeagueSandbox.GameServer.GameObjects
             CampId = campId;
             CampUnk = campUnk;
             SpawnAnimationTime = spawnAnimationTime;
+            OriginalPosition = new Vector2(x, y);
         }
 
         public override void OnAdded()
         {
-            base.OnAdded();
+            //base.OnAdded();
             _game.PacketNotifier.NotifySpawn(this);
+        }
+
+        public override void Update(float diff)
+        {
+            base.Update(diff);
+            if (!IsDead && IsEngaged)
+            {
+                Logger.Debug("ENGAGED");
+                if (IsDashing || _aiPaused)
+                {
+                    Logger.Debug("AIPAUSED");
+                    Replication.Update();
+                    return;
+                }
+
+                if (!IsEvading && ScanForNearestTarget())
+                {
+                    Logger.Debug("SCANNING");
+                    if (!RecalculateAttackPosition())
+                    {
+                        Logger.Debug("KEEPFOCUSING");
+                        KeepFocusingTarget();
+                    }
+                }
+            }
+
+            if (IsEvading)
+                Logger.Debug("EVADING");
+
+            if (IsEvading && GetPosition().X == OriginalPosition.X && GetPosition().Y == OriginalPosition.Y)
+                IsEvading = false;
+
+            if (IsEvading)
+                KeepEvading();
+
+            Replication.Update();
+        }
+
+        private void KeepEvading()
+        {
+            SetWaypoints(new List<Vector2> { GetPosition(), OriginalPosition });
+            if (Stats.CurrentHealth < Stats.HealthPoints.Total)
+            {
+                Stats.CurrentHealth += 50;
+                if (Stats.CurrentHealth > Stats.HealthPoints.Total)
+                    Stats.CurrentHealth = Stats.HealthPoints.Total;
+            }
+        }
+
+        private bool ScanForNearestTarget()
+        {
+            IAttackableUnit nextTarget = null;
+            var objects = _game.ObjectManager.GetObjects();
+            foreach (var it in objects.OrderBy(x => GetDistanceTo(x.Value)))
+            {
+                if (!(it.Value is IAttackableUnit u) || it.Value is ILaneMinion || u.IsDead || u.Team == Team)
+                    continue;
+
+                    nextTarget = u;
+                    break;
+            }
+            if (nextTarget != null)
+            {
+                TargetUnit = nextTarget;
+                _game.PacketNotifier.NotifySetTarget(this, nextTarget);
+                return true;
+            }
+            _game.PacketNotifier.NotifyStopAutoAttack(this);
+            IsAttacking = false;
+            IsEvading = true;
+            return false;
+        }
+
+        protected new void KeepFocusingTarget()
+        {
+            if (IsAttacking && (TargetUnit == null || TargetUnit.IsDead))
+            // If target is dead or out of range
+            {
+                _game.PacketNotifier.NotifyStopAutoAttack(this);
+                IsAttacking = false;
+                IsEvading = true;
+            }
+        }
+
+        public override void TakeDamage(IAttackableUnit attacker, float damage, DamageType type, DamageSource source, DamageText damageText)
+        {
+            base.TakeDamage(attacker, damage, type, source, damageText);
+            Logger.Debug("TOOK DAMAGE!");
+            if (!IsEvading)
+                IsEngaged = true;
         }
     }
 }

@@ -795,11 +795,6 @@ namespace PacketDefinitions420
             var emptyNeutralCamp = new EmptyNeutralCamp(jC, killer);
             //todo: broadcast only to eligible team(s)
             _packetHandlerManager.BroadcastPacket(emptyNeutralCamp, Channel.CHL_S2C);
-            //var packet = new LeaguePackets.GamePackets.S2C_Neutral_Camp_Empty();
-            //packet.CampIndex = (int) jC.CampId;
-            //packet.DoPlayVO = false; //todo
-            //packet.
-
         }
 
         public void NotifyDash(IAttackableUnit u,
